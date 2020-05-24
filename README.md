@@ -15,7 +15,7 @@ the PHC subreddit &ndash; it's always checking the posts there &ndash; but feel 
 ### Requirements
 
 Other than the usual package requirements (`pip install -r requirements.txt`), you need to install tesseract-ocr.
-On Ubuntu or other Debian-based distros, you can install it with `sudo apt install tesseract-ocr`.
+On Ubuntu or other Debian-based distros, you can install it with `sudo apt install tesseract-ocr tesseract-ocr-eng`.
 
 I can't remember, but I think you'd also need to install Python source files (`sudo apt install python3-dev`),
 so if you see `#include <Python.h>` in an error log somewhere, try that.
