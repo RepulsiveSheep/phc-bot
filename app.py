@@ -49,9 +49,6 @@ PASSWORD = os.getenv('REDDIT_PASSWORD')
 CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
 CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
 
-CSE_API_CX = os.getenv('CSE_API_CX')
-CSE_API_KEYS = os.getenv('CSE_API_KEY').split(',')
-
 SAUCE_NOT_FOUND_MESSAGE = '''Sorry! I couldn't find the sauce for this one :('''
 
 
@@ -66,25 +63,8 @@ class Prediction:
 # noinspection PyBroadException
 def search(query: str) -> tuple:
     query = f'site:https://www.pornhub.com/view_video.php "{query}"'
-    mylogger.debug(f'Searching for query {query!r} via Google CSE...')
+    mylogger.debug(f'Searching for query {query!r} via Google...')
 
-    # res = None
-    # for cse_api_key in CSE_API_KEYS:
-    #     res = requests.get(
-    #         'https://www.googleapis.com/customsearch/v1/siterestrict', {
-    #             'key': cse_api_key,
-    #             'cx': CSE_API_CX,
-    #             'q': query,
-    #             'fields': 'items(link)',
-    #         }).json()
-    #     if 'items' in res:
-    #         mylogger.debug(f'Found in CSE! Results: {res!r}')
-    #         return [item['link'] for item in res['items']]
-    #
-    #     time.sleep(5)
-
-    # mylogger.warning(f'Could not find results in CSE! Response: {res!r}')
-    # mylogger.warning(f'Searching via Google directly instead...')
     try:
         results = google_search(query, stop=1, user_agent=secrets.choice(UA))
     except Exception as e:
