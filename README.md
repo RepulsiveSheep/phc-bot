@@ -50,8 +50,8 @@ main.py, which is what runs on Heroku, runs in the two modes concurrently using 
 
 ### Heroku
 
-This project was built with Heroku in mind, and I've also added app.json. So you can pretty much deploy the bot
-by clicking the button below:
+This project was built with Heroku in mind, and has an app.json file. So you can pretty much deploy the bot
+by clicking a deploy button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
@@ -61,6 +61,5 @@ This is a pretty dumb bot at this point, so feel free to improve it!
 
 [1]: app.py
 [2]: .env.sample
-[3]: https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example
 [3]: https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example
 [4]: https://heroku.com/deploy
