@@ -41,6 +41,8 @@ UA = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ch
 
 SUBREDDIT = os.getenv('REDDIT_SUBREDDIT')
 
+MAINTAINER = os.getenv('REDDIT_BOT_MAINTAINER')
+
 USERNAME = os.getenv('REDDIT_USERNAME')
 PASSWORD = os.getenv('REDDIT_PASSWORD')
 
@@ -337,7 +339,7 @@ def process_mentions():
         comment: Comment
         for comment in reddit.inbox.mentions():
             mylogger.debug(f'Processing mention comment {comment.id!r}...')
-            if not (comment.author and comment.author.name and (not DEBUG or comment.author.name == 'RepulsiveSheep')):
+            if not (comment.author and comment.author.name and (not DEBUG or comment.author.name == MAINTAINER)):
                 mylogger.warning(f'Author not found for mention comment {comment.id!r}, skipping...')
                 continue
 

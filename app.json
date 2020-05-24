@@ -1,0 +1,54 @@
+{
+  "name": "phc-bot",
+  "description": "Sauce bot for PHC subreddit",
+  "repository": "https://github.com/RepulsiveSheep/phc-bot",
+  "keywords": [
+    "python",
+    "reddit",
+    "reddit-bot"
+  ],
+  "scripts": {
+    "postdeploy": "python create_schema.py"
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-apt"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "REDDIT_SUBREDDIT": {
+      "description": "The subreddit where the bot will run for every post.",
+      "value": "PornhubComments"
+    },
+    "REDDIT_BOT_MAINTAINER": {
+      "description": "Username of the bot maintainer, aka you! Only used in debug mode."
+    },
+    "REDDIT_USERNAME": {
+      "description": "Username of the bot account."
+    },
+    "REDDIT_PASSWORD": {
+      "description": "Password of the bot account."
+    },
+    "REDDIT_CLIENT_ID": {
+      "description": "OAuth client ID of the bot account."
+    },
+    "REDDIT_CLIENT_SECRET": {
+      "description": "OAuth client secret of the bot account."
+    },
+    "TESSDATA_PREFIX": {
+      "description": "Path to tessdata. Used for tesseract-ocr.",
+      "value": "/app/.apt/usr/share/tesseract-ocr/4.00/tessdata"
+    },
+    "DEBUG": {
+      "description": "Run the bot in debug mode?",
+      "value": "0",
+      "required": false
+    }
+  }
+}
