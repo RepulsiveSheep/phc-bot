@@ -169,7 +169,7 @@ def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title)
         f'{sauce_line}\n\n'
         '---\n\n'
         '^(*I am a bot, and while I\'m not always right, I try my very best.*)\n\n'
-        '[^(How?)](https://redd.it/gc0nv6)',
+        '[^(How?)](https://redd.it/gc0nv6) ^| [^(Source code)](https://github.com/RepulsiveSheep/phc-bot)',
     )
 
 
