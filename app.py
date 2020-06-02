@@ -160,9 +160,16 @@ def get_ph_title(url):
     return title
 
 
+def escape_reddit_link_text(text: str) -> str:
+    escape_chars = ('[', ']', '*', '_')
+    for ch in escape_chars:
+        text = text.replace(ch, rf'\{ch}')
+    return text
+
+
 def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title) -> Optional[Comment]:
     if title:
-        sauce_line = f'Sauce (**NSFW**): [{title}]({predicted_link})'
+        sauce_line = f'Sauce (**NSFW**): [{escape_reddit_link_text(title)}]({predicted_link})'
     else:
         sauce_line = f'[Sauce (**NSFW**)]({predicted_link})'
     return comment.reply(
