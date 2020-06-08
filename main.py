@@ -11,11 +11,6 @@ mentions_thread = threading.Thread(target=process_mentions)
 
 
 @app.route('/')
-def index():
-    return ''
-
-
-@app.route('/onlythewinds')
 def run():
     global submissions_thread, mentions_thread
 
