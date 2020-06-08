@@ -66,13 +66,13 @@ def search(query: str) -> tuple:
     mylogger.debug(f'Searching for query {query!r} via Google...')
 
     try:
-        results = google_search(query, stop=1, user_agent=secrets.choice(UA))
+        results = list(google_search(query, stop=1, user_agent=secrets.choice(UA)))
     except Exception as e:
         mylogger.error(f'Google search failed, trying duck: {e!r}')
         mylogger.debug(f'Query that failed: {query}')
         results = duck_search(query)
     time.sleep(5)
-    return clean_ph_links(list(results)[:1])
+    return clean_ph_links(results[:1])
 
 
 def duck_search(query):
