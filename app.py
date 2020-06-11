@@ -222,6 +222,10 @@ def get_prediction(submission: Submission) -> Optional[Prediction]:
         mylogger.debug(f'Could not find string to search for {submission.id!r}, skipping...')
         return None
 
+    if len(string_to_search) < 12:
+        mylogger.debug(f'String to search too small, skipping: {string_to_search!r}')
+        return None
+
     mylogger.debug(f'String preprocessed! Searching for {string_to_search!r} on Google...')
 
     prediction = Prediction(link=None, ocr_text=ocr_string, query_text=string_to_search)
