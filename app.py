@@ -367,11 +367,25 @@ def process_mentions():
             if replied_submission and replied_submission.predicted_link:
                 predicted_link = replied_submission.predicted_link
                 mylogger.debug(f'Predicted link {replied_submission.predicted_link!r} found '
-                               f'for {submission.id!r}, no need to lookup again. Getting title...')
-                title = get_ph_title(predicted_link)
-                mylogger.debug(f'Title {title!r} found, replying with sauce')
-                prediction = Prediction.from_replied_submission(replied_submission)
-                sauce_comment = reply_with_sauce(comment, prediction.link_with_text_highlighted(), title)
+                               f'for {submission.id!r}, no need to lookup again.')
+
+                sauce_comment = None
+                _comment: Comment
+                for _comment in submission.comments.list():
+                    if isinstance(_comment, Comment) and _comment.author.name == USERNAME and 'Sauce' in _comment.body:
+                        sauce_comment = _comment
+                        break
+
+                if sauce_comment:
+                    mylogger.debug(f'Found sauce comment {sauce_comment.id}, redirecting to it...')
+                    comment.reply(f"[I've already provided sauce in this thread here!]"
+                                  f"(https://reddit.com/comments/{submission.id}/_/{sauce_comment.id})")
+                else:
+                    title = get_ph_title(predicted_link)
+                    mylogger.debug(f'Title {title!r} found, replying with sauce')
+                    prediction = Prediction.from_replied_submission(replied_submission)
+                    sauce_comment = reply_with_sauce(comment, prediction.link_with_text_highlighted(), title)
+
                 RepliedComment.create(comment_id=comment.id, replied_submission=replied_submission)
                 mylogger.debug(f'Replied with sauce to {comment.id!r}. Sauce comment is {sauce_comment.id!r}')
             else:
