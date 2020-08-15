@@ -49,7 +49,11 @@ PASSWORD = os.getenv('REDDIT_PASSWORD')
 CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
 CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
 
+INFO_PAGE_LINK = 'https://www.reddit.com/user/phc-bot/comments/gc0nv6/info/'
+SOURCE_CODE_LINK = 'https://github.com/RepulsiveSheep/phc-bot'
 SAUCE_NOT_FOUND_MESSAGE = '''Sorry! I couldn't find the sauce for this one :('''
+OTHER_SUB_DISCLAIMER = ('''Beep boop, I'm a bot! I try to find the PornHub video from a screenshot of PornHub '''
+                        '''comments or video title.''')
 
 
 class Prediction:
@@ -182,15 +186,21 @@ def escape_reddit_link_text(text: str) -> str:
 
 
 def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title) -> Optional[Comment]:
+    other_sub_disclaimer = ''
+    if isinstance(comment, Comment):
+        if comment.submission.subreddit.display_name != SUBREDDIT:
+            other_sub_disclaimer = f'{OTHER_SUB_DISCLAIMER}. Here\'s what I found for this one.\n\n'
+
     if title:
         sauce_line = f'Sauce (**NSFW**): [{escape_reddit_link_text(title)}]({predicted_link})'
     else:
         sauce_line = f'[Sauce (**NSFW**)]({predicted_link})'
     return comment.reply(
+        f'{other_sub_disclaimer}'
         f'{sauce_line}\n\n'
         '---\n\n'
-        '^(*I am a bot, and while I\'m not always right, I try my very best.*)\n\n'
-        '[^(How?)](https://redd.it/gc0nv6) ^| [^(Source code)](https://github.com/RepulsiveSheep/phc-bot)',
+        '*I am a bot, and while I\'m not always right, I try my very best.*\n\n'
+        f'[How?]({INFO_PAGE_LINK}) | [Source code]({SOURCE_CODE_LINK})',
     )
 
 
@@ -372,7 +382,8 @@ def process_mentions():
                 sauce_comment = None
                 _comment: Comment
                 for _comment in submission.comments.list():
-                    if isinstance(_comment, Comment) and _comment.author.name == USERNAME and 'Sauce' in _comment.body:
+                    if (isinstance(_comment, Comment) and _comment.author and _comment.author.name == USERNAME
+                            and 'Sauce' in _comment.body):
                         sauce_comment = _comment
                         break
 
@@ -392,10 +403,15 @@ def process_mentions():
                 mylogger.debug(
                     f'Could not find predicted link in database, getting prediction for {submission.id!r}...')
                 prediction = get_prediction(submission)
+
+                sauce_not_found_message = SAUCE_NOT_FOUND_MESSAGE
+                if submission.subreddit.display_name != SUBREDDIT:
+                    sauce_not_found_message = f'{OTHER_SUB_DISCLAIMER}\n\n{SAUCE_NOT_FOUND_MESSAGE}'
+
                 if not (prediction and prediction.link):
                     RepliedComment.create(comment_id=comment.id)
                     mylogger.debug(f'Failed to get prediction! Issuing apology comment to {comment.id!r}...')
-                    apology_comment = comment.reply(SAUCE_NOT_FOUND_MESSAGE)
+                    apology_comment = comment.reply(sauce_not_found_message)
                     mylogger.debug(f'Apology comment id: {apology_comment.id!r}')
                     continue
 
@@ -404,7 +420,7 @@ def process_mentions():
                 if not title:
                     RepliedComment.create(comment_id=comment.id)
                     mylogger.debug(f'Failed to get title! Issuing apology comment to {comment.id!r}...')
-                    apology_comment = comment.reply(SAUCE_NOT_FOUND_MESSAGE)
+                    apology_comment = comment.reply(sauce_not_found_message)
                     mylogger.debug(f'Apology comment id: {apology_comment.id!r}')
                     continue
 
