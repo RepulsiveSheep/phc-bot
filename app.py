@@ -189,7 +189,7 @@ def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title)
     other_sub_disclaimer = ''
     if isinstance(comment, Comment):
         if comment.submission.subreddit.display_name != SUBREDDIT:
-            other_sub_disclaimer = f'{OTHER_SUB_DISCLAIMER}. Here\'s what I found for this one.\n\n'
+            other_sub_disclaimer = f'{OTHER_SUB_DISCLAIMER} Here\'s what I found for this one.\n\n'
 
     if title:
         sauce_line = f'Sauce (**NSFW**): [{escape_reddit_link_text(title)}]({predicted_link})'
