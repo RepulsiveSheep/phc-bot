@@ -155,6 +155,7 @@ def get_string_to_search(string: str) -> str:
         if any(w in line for w in blacklisted_phrases):
             continue
         line = line.replace('|', 'I')
+        line = line.replace('"', '')
         final_lines.append(line)
 
     output = '\n'.join(final_lines)
