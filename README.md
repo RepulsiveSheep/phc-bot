@@ -55,6 +55,35 @@ by clicking a deploy button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
+### Docker
+
+You can also run this image with docker. The included [Dockerfile][5] is meant for production (runs Flask server via 
+gunicorn), but you can easily mount the source directory as a volume and use it for development as well.
+
+Start by building the image:
+
+```bash
+docker build --tag phc-bot .
+```
+
+Before you can start using the container, you need to create the schema in whatever database you're using (either
+SQLite or an external one, configure this using `.env` file).
+
+```
+docker run --name phc-bot --env-file .env -p 8000:8000 -d phc-bot
+docker exec phc-bot python create_schema.py
+```
+
+For development:
+
+```bash
+docker run --name phc-bot -d -v "$(pwd):/app" --env-file .env -p 8000:8000 phc-bot --reload
+docker exec phc-bot python create_schema.py
+```
+
+This will run mount the current folder to the container's /app folder, and run gunicorn with the `--reload` flag,
+so any time you make changes to your host directory, gunicorn will reload itself.
+
 ## Contributing
 
 This is a pretty dumb bot at this point, so feel free to improve it!
@@ -63,3 +92,4 @@ This is a pretty dumb bot at this point, so feel free to improve it!
 [2]: .env.sample
 [3]: https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example
 [4]: https://heroku.com/deploy
+[5]: Dockerfile
