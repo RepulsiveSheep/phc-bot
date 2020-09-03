@@ -80,7 +80,7 @@ class Prediction:
 
 # noinspection PyBroadException
 def search(query: str) -> tuple:
-    query = f'site:https://www.pornhub.com/view_video.php "{query}"'
+    query = f'site:pornhub.com/view_video.php "{query}"'
     mylogger.debug(f'Searching for query {query!r} via Google...')
 
     try:
@@ -325,7 +325,7 @@ def process_submissions():
             continue
 
         mylogger.debug(f'Title {title!r} found for submission {submission.id!r}, getting replied comment...')
-        replied_comment = reply_with_sauce(submission, prediction.link_with_text_highlighted(), title)
+        replied_comment = reply_with_sauce(submission, prediction.link, title)
         if not replied_comment:
             mylogger.debug(f'replied_comment {replied_comment.id!r}, skipping {submission.id!r}')
             RepliedSubmission.create(
@@ -396,7 +396,7 @@ def process_mentions():
                     title = get_ph_title(predicted_link)
                     mylogger.debug(f'Title {title!r} found, replying with sauce')
                     prediction = Prediction.from_replied_submission(replied_submission)
-                    sauce_comment = reply_with_sauce(comment, prediction.link_with_text_highlighted(), title)
+                    sauce_comment = reply_with_sauce(comment, prediction.link, title)
 
                 RepliedComment.create(comment_id=comment.id, replied_submission=replied_submission)
                 mylogger.debug(f'Replied with sauce to {comment.id!r}. Sauce comment is {sauce_comment.id!r}')
@@ -426,7 +426,7 @@ def process_mentions():
                     continue
 
                 mylogger.debug(f'Title {title!r} found, replying with sauce')
-                sauce_comment = reply_with_sauce(comment, prediction.link_with_text_highlighted(), title)
+                sauce_comment = reply_with_sauce(comment, prediction.link, title)
                 if sauce_comment:
                     mylogger.debug(f'Sauce comment: {sauce_comment.id!r} found, saving to replied_submission in DB')
                     replied_submission = RepliedSubmission.create(
