@@ -2,7 +2,7 @@ cssselect==1.1.0
 Flask==1.1.2
 google==2.0.3
 gunicorn==20.0.4
-lxml==4.5.0
+lxml==4.6.3
 peewee~=3.13.3
 praw==7.0.0
 psycopg2==2.8.5
