@@ -172,8 +172,6 @@ def get_ph_title(url):
             root = lh.fromstring(res.text)
             title_nodes = root.cssselect('title')
             title: Optional[str] = (len(title_nodes) and title_nodes[0].text) or None
-            if title:
-                title = title.rsplit('-', 1)[0].strip()
     except Exception as e:
         print(f'{e!r}')
     return title
@@ -201,7 +199,7 @@ def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title)
         f'{sauce_line}\n\n'
         '---\n\n'
         '*I am a bot, and while I\'m not always right, I try my very best.*\n\n'
-        f'[How?]({INFO_PAGE_LINK}) | [Source code]({SOURCE_CODE_LINK})',
+        f'[How?]({INFO_PAGE_LINK}) | [Sauce code]({SOURCE_CODE_LINK})',
     )
 
 
