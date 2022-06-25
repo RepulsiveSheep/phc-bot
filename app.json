@@ -10,9 +10,7 @@
   "scripts": {
     "postdeploy": "python create_schema.py"
   },
-  "stack": {
-    "heroku-18"
-  },
+  "stack": "heroku-22",
   "addons": [
     "heroku-postgresql"
   ],
