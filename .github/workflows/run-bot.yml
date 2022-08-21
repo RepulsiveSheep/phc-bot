@@ -1,4 +1,4 @@
-name: Run
+name: Run bot
 
 on:
   schedule:
@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  run:
+  run-bot:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Run
+      - name: Run bot
         id: run
         uses: fjogeleit/http-request-action@v1
         with:
@@ -20,5 +20,5 @@ jobs:
 
       - name: Show response
         run: |
-          echo ${{ steps.myRequest.outputs.response }}
-          echo ${{ steps.myRequest.outputs.headers }}
+          echo ${{ steps.run.outputs.response }}
+          echo ${{ steps.run.outputs.headers }}
