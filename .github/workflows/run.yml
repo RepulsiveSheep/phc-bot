@@ -11,4 +11,13 @@ jobs:
 
     steps:
       - name: Run
-        run: ./http_get ${{ secrets.HEROKU_APP_URL }}
+        id: run
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.HEROKU_APP_URL }}
+          method: GET
+
+      - name: Show response
+        run: |
+          echo ${{ steps.myRequest.outputs.response }}
+          echo ${{ steps.myRequest.outputs.headers }}
