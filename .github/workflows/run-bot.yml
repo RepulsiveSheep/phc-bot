@@ -21,4 +21,3 @@ jobs:
       - name: Show response
         run: |
           echo ${{ steps.run.outputs.response }}
-          echo ${{ steps.run.outputs.headers }}
