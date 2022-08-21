@@ -16,6 +16,7 @@ jobs:
         with:
           url: ${{ secrets.HEROKU_APP_URL }}
           method: GET
+          timeout: 30000
 
       - name: Show response
         run: |
