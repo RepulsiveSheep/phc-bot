@@ -1,0 +1,14 @@
+name: Run
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'
+
+
+jobs:
+  run:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Run
+        run: ./http_get ${{ secrets.HEROKU_APP_URL }}
