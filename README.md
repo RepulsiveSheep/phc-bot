@@ -48,13 +48,6 @@ In `mentions` mode, it processes each "mention", or call to summon (i.e. /u/phcb
 
 main.py, which is what runs on Heroku, runs in the two modes concurrently using threads.
 
-### Heroku
-
-This project was built with Heroku in mind, and has an app.json file. So you can pretty much deploy the bot
-by clicking a deploy button:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 ### Docker
 
 You can also run this image with docker. The included [Dockerfile][5] is meant for production (runs Flask server via 
