@@ -81,7 +81,7 @@ so any time you make changes to your host directory, gunicorn will reload itself
 
 This is a pretty dumb bot at this point, so feel free to improve it!
 
-[1]: app.py
+[1]: phc_bot/app.py
 [2]: .env.sample
 [3]: https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example
 [4]: https://heroku.com/deploy

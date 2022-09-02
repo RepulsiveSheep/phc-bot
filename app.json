@@ -8,9 +8,9 @@
     "reddit-bot"
   ],
   "scripts": {
-    "postdeploy": "python create_schema.py"
+    "postdeploy": "python phc_bot/create_schema.py"
   },
-  "stack": "heroku-22",
+  "stack": "container",
   "addons": [
     "heroku-postgresql"
   ],

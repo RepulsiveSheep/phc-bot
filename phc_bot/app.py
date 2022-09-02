@@ -5,7 +5,7 @@ import os
 import secrets
 import time
 import urllib.request
-from typing import Optional, Union, List
+from typing import Optional, Union, Iterable
 from urllib.error import HTTPError
 from urllib.parse import urlparse, urlunparse, quote
 
@@ -19,7 +19,7 @@ from googlesearch import search as google_search
 from praw import Reddit
 from praw.models import Submission, Comment
 
-from db import RepliedSubmission, RepliedComment
+from phc_bot.db import RepliedSubmission, RepliedComment
 
 load_dotenv()
 
@@ -51,6 +51,7 @@ CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
 
 INFO_PAGE_LINK = 'https://www.reddit.com/user/phc-bot/comments/gc0nv6/info/'
 SOURCE_CODE_LINK = 'https://github.com/RepulsiveSheep/phc-bot'
+SHUTTING_DOWN_LINK = 'https://www.reddit.com/user/RepulsiveSheep/comments/x4aboi/shutting_down_phcbot/'
 SAUCE_NOT_FOUND_MESSAGE = '''Sorry! I couldn't find the sauce for this one :('''
 OTHER_SUB_DISCLAIMER = ('''Beep boop, I'm a bot! I try to find the PornHub video from a screenshot of PornHub '''
                         '''comments or video title.''')
@@ -127,14 +128,15 @@ def duck_search(query):
 
 
 # noinspection PyProtectedMember
-def clean_ph_links(links: List[str]) -> tuple:
+def clean_ph_links(links: Iterable[str]) -> tuple:
     clean_links = []
     for link in links:
         url_parsed = urlparse(link)
         if not url_parsed:
             continue
 
-        if not url_parsed.netloc.endswith('.pornhub.com'):
+        hostname = url_parsed.netloc
+        if hostname != 'pornhub.com' and not hostname.endswith('.pornhub.com'):
             continue
 
         url_parsed = url_parsed._replace(netloc='www.pornhub.com')
@@ -156,6 +158,7 @@ def get_string_to_search(string: str) -> str:
             continue
         line = line.replace('|', 'I')
         line = line.replace('"', '')
+        line = line.replace('’', "'")
         final_lines.append(line)
 
     output = '\n'.join(final_lines)
@@ -199,7 +202,7 @@ def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title)
         f'{sauce_line}\n\n'
         '---\n\n'
         '*I am a bot, and while I\'m not always right, I try my very best.*\n\n'
-        f'[How?]({INFO_PAGE_LINK}) | [Sauce code]({SOURCE_CODE_LINK})',
+        f'[How?]({INFO_PAGE_LINK}) | [Sauce code]({SOURCE_CODE_LINK}) | [Shutting down soon]({SHUTTING_DOWN_LINK})',
     )
 
 

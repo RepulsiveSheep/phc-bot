@@ -142,4 +142,4 @@ cython_debug/
 
 *.swp
 
-images/*
+/phc_bot/images/*

@@ -1,0 +1,43 @@
+samples:
+  - input: |-
+      CuntLicker9 mantel talsee tere)
+      
+      This almost made me forget Elden Ring is coming
+      out this month
+      
+      \@ 15 Ci Reply al
+
+    output: This almost made me forget Elden Ring is coming out this month
+  - input: |-
+      angel_dust0O = 5 months ago
+      
+      | don't want to see mosaic in
+      the dick ®
+    output: I don't want to see mosaic in the dick ®
+  - input: |-
+      OmegaWarhead 3 years ago
+      
+      Does anyone want to join my Minecraft PE
+      server my pc account got so | can’t play on that
+      but | need some minecraft friends in my life
+      
+      right now
+      1@ 128 9! Reply aa
+      OmegaWarhead 2 years ago
+      
+      John Christian the server is down right
+      now il use a free server launcher till | can
+      get my old server back up again
+      
+      1@ 8 ¥ Reply »
+    output: >-
+      Does anyone want to join my Minecraft PE server my pc account got
+      so I can't play on that but I need some minecraft friends in my life
+  - input: |-
+      Vv: a 1 year ago
+
+      He sounds like the dog | hit in my car yesterday
+
+      1@ 40 9! Reply rd
+    output: >-
+      He sounds like the dog I hit in my car yesterday
