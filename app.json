@@ -14,14 +14,6 @@
   "addons": [
     "heroku-postgresql"
   ],
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-apt"
-    },
-    {
-      "url": "heroku/python"
-    }
-  ],
   "env": {
     "REDDIT_SUBREDDIT": {
       "description": "The subreddit where the bot will run for every post.",
@@ -41,10 +33,6 @@
     },
     "REDDIT_CLIENT_SECRET": {
       "description": "OAuth client secret of the bot account."
-    },
-    "TESSDATA_PREFIX": {
-      "description": "Path to tessdata. Used for tesseract-ocr.",
-      "value": "/app/.apt/usr/share/tesseract-ocr/4.00/tessdata"
     },
     "DEBUG": {
       "description": "Run the bot in debug mode?",

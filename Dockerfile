@@ -14,11 +14,6 @@ RUN apt-get update && \
 
 COPY . .
 
-RUN adduser --disabled-password --gecos "" user && \
-    chown -R user:user /app && \
-    chmod -R 755 /app
-USER user
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN pip install --no-cache-dir .

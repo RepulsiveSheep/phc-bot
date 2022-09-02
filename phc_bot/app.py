@@ -23,11 +23,11 @@ from phc_bot.db import RepliedSubmission, RepliedComment
 
 load_dotenv()
 
-DEBUG = os.getenv('DEBUG') == '1'
+DEBUG_MODE = os.getenv('DEBUG') == '1'
 
 mylogger = logging.getLogger(__name__)
 mylogger.addHandler(logging.StreamHandler())
-if DEBUG:
+if DEBUG_MODE:
     mylogger.setLevel(logging.DEBUG)
 else:
     mylogger.setLevel(logging.WARNING)
@@ -221,7 +221,8 @@ def get_prediction(submission: Submission) -> Optional[Prediction]:
         url = f'https://i.imgur.com{url_parsed.path}.jpg'
 
     filename = os.path.basename(url)
-    filepath = os.path.join('images', filename)
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    filepath = os.path.join(curr_dir, 'images', filename)
     mylogger.debug(f'Saving {url!r} to {filepath!r} for submission {submission.id!r}, URL {submission.url!r}...')
     try:
         urllib.request.urlretrieve(url, filepath)
@@ -356,7 +357,7 @@ def process_mentions():
         comment: Comment
         for comment in reddit.inbox.mentions():
             mylogger.debug(f'Processing mention comment {comment.id!r}...')
-            if not (comment.author and comment.author.name and (not DEBUG or comment.author.name == MAINTAINER)):
+            if not (comment.author and comment.author.name and (not DEBUG_MODE or comment.author.name == MAINTAINER)):
                 mylogger.warning(f'Author not found for mention comment {comment.id!r}, skipping...')
                 continue
 

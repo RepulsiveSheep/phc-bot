@@ -1,5 +1,7 @@
 # u/phc-bot
 
+[![Build and test](https://github.com/RepulsiveSheep/phc-bot/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/RepulsiveSheep/phc-bot/actions/workflows/build-and-test.yml) [![codecov](https://codecov.io/gh/RepulsiveSheep/phc-bot/branch/master/graph/badge.svg?token=UDKZ3R6LJZ)](https://codecov.io/gh/RepulsiveSheep/phc-bot)
+
 Source code for the&mdash; *ahem* bot. You know the one.
 
 The core of the bot is in the [app.py][1] file. main.py is just a Flask endpoint for Heroku, which is where the bot
