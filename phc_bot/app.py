@@ -5,7 +5,7 @@ import os
 import secrets
 import time
 import urllib.request
-from typing import Optional, Union, Iterable
+from typing import Optional, Union, Iterable, List
 from urllib.error import HTTPError
 from urllib.parse import urlparse, urlunparse, quote
 
@@ -146,6 +146,7 @@ def clean_ph_links(links: Iterable[str]) -> tuple:
 
 
 def get_string_to_search(string: str) -> str:
+    string = string.strip()
     lines = string.splitlines()
     blacklisted_phrases = [
         'year ago', 'month ago', 'week ago', 'day ago', 'hour ago',
@@ -206,64 +207,76 @@ def reply_with_sauce(comment: Union[Submission, Comment], predicted_link, title)
     )
 
 
+def get_image_urls_for_submission(submission: Submission) -> List[str]:
+    url = submission.url
+    direct_links = []
+    url_parsed = urlparse(url)
+    # TODO: handle imgur.com/a/abc.jpg case (gallery)
+    if url_parsed.netloc == 'imgur.com' and '.' not in url_parsed.path:
+        mylogger.debug(
+            f'Submission link of type imgur.com/abc found for submission {submission.id!r}, original link {submission.url!r}, appending .jpg')
+        direct_links.append(f'https://i.imgur.com{url_parsed.path}.jpg')
+    elif url.startswith('https://www.reddit.com/gallery/'):
+        print(submission)
+    else:
+        direct_links.append(url)
+    return direct_links
+
+
 def get_prediction(submission: Submission) -> Optional[Prediction]:
     if submission.is_self or not submission.url:
         mylogger.debug(f'URL not found for submission {submission.id!r} returning None as prediction...')
         return None
 
     mylogger.debug(f'Parsing URL to get prediction for submission {submission.id!r}...')
-    url = submission.url
-    url_parsed = urlparse(url)
-    # TODO: handle imgur.com/a/abc.jpg case (gallery)
-    if url_parsed.netloc == 'imgur.com' and '.' not in url_parsed.path:
+    urls = get_image_urls_for_submission(submission.url)
+
+    prediction = None
+    for url in urls:
+        filename = os.path.basename(url)
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        filepath = os.path.join(curr_dir, 'images', filename)
+        mylogger.debug(f'Saving {url!r} to {filepath!r} for submission {submission.id!r}, URL {submission.url!r}...')
+        try:
+            urllib.request.urlretrieve(url, filepath)
+        except HTTPError as e:
+            mylogger.error(f'Could not retrieve {url!r} for submission {submission.id!r}, HTTPError: {e!r}')
+            continue
+
+        mylogger.debug(f'Saved successfully to {filepath!r}! Getting mime type')
+        mime = magic.from_file(filepath, mime=True)
+        if not mime.startswith('image/'):
+            mylogger.debug(f'image mime type expected, found {mime!r} for submission {submission.id!r}, skipping...')
+            continue
+
+        mylogger.debug(f'Getting text via OCR for image at {filepath!r} for submission {submission.id!r}...')
+        ocr_string = pytesseract.image_to_string(filepath)
+        if not ocr_string.strip():
+            mylogger.debug(f'OCR string blank for {submission.id!r}, skipping...')
+            continue
+
         mylogger.debug(
-            f'Submission link of type imgur.com/abc found for submission {submission.id!r}, original link {submission.url!r}, appending .jpg')
-        url = f'https://i.imgur.com{url_parsed.path}.jpg'
+            f'Found text! Putting it through get_string_to_search preprocessor for submission {submission.id!r}...')
+        string_to_search = get_string_to_search(ocr_string)
+        if not string_to_search:
+            mylogger.debug(f'Could not find string to search for {submission.id!r}, skipping...')
+            continue
 
-    filename = os.path.basename(url)
-    curr_dir = os.path.dirname(os.path.realpath(__file__))
-    filepath = os.path.join(curr_dir, 'images', filename)
-    mylogger.debug(f'Saving {url!r} to {filepath!r} for submission {submission.id!r}, URL {submission.url!r}...')
-    try:
-        urllib.request.urlretrieve(url, filepath)
-    except HTTPError as e:
-        mylogger.error(f'Could not retrieve {url!r} for submission {submission.id!r}, HTTPError: {e!r}')
-        return None
+        if len(string_to_search) < 12:
+            mylogger.debug(f'String to search too small, skipping: {string_to_search!r}')
+            continue
 
-    mylogger.debug(f'Saved successfully to {filepath!r}! Getting mime type')
-    mime = magic.from_file(filepath, mime=True)
-    if not mime.startswith('image/'):
-        mylogger.debug(f'image mime type expected, found {mime!r} for submission {submission.id!r}, skipping...')
-        return None
+        mylogger.debug(f'String preprocessed! Searching for {string_to_search!r} on Google...')
 
-    mylogger.debug(f'Getting text via OCR for image at {filepath!r} for submission {submission.id!r}...')
-    ocr_string = pytesseract.image_to_string(filepath)
-    if not ocr_string.strip():
-        mylogger.debug(f'OCR string blank for {submission.id!r}, skipping...')
-        return None
+        prediction = Prediction(link=None, ocr_text=ocr_string, query_text=string_to_search)
 
-    mylogger.debug(
-        f'Found text! Putting it through get_string_to_search preprocessor for submission {submission.id!r}...')
-    string_to_search = get_string_to_search(ocr_string)
-    if not string_to_search:
-        mylogger.debug(f'Could not find string to search for {submission.id!r}, skipping...')
-        return None
+        results = search(string_to_search)
+        if len(results) == 0:
+            mylogger.debug(f'No results found for {string_to_search!r} on Google skipping...')
+            continue
 
-    if len(string_to_search) < 12:
-        mylogger.debug(f'String to search too small, skipping: {string_to_search!r}')
-        return None
-
-    mylogger.debug(f'String preprocessed! Searching for {string_to_search!r} on Google...')
-
-    prediction = Prediction(link=None, ocr_text=ocr_string, query_text=string_to_search)
-
-    results = search(string_to_search)
-    if len(results) == 0:
-        mylogger.debug(f'No results found for {string_to_search!r} on Google skipping...')
-        return prediction
-
-    prediction.link = results[0]
-    mylogger.debug(f'Link {prediction.link!r} found for {string_to_search!r}! Returning...')
+        prediction.link = results[0]
+        mylogger.debug(f'Link {prediction.link!r} found for {string_to_search!r}! Returning...')
     return prediction
 
 
