@@ -1,5 +1,10 @@
 # u/phc-bot
 
+
+## ARCHIVED
+
+The repo has been archived, because Heroku killed its free tier, which this bot was running on.
+
 [![Build and test](https://github.com/RepulsiveSheep/phc-bot/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/RepulsiveSheep/phc-bot/actions/workflows/build-and-test.yml) [![codecov](https://codecov.io/gh/RepulsiveSheep/phc-bot/branch/master/graph/badge.svg?token=UDKZ3R6LJZ)](https://codecov.io/gh/RepulsiveSheep/phc-bot)
 
 Source code for the&mdash; *ahem* bot. You know the one.
