@@ -1,8 +1,10 @@
 import os
 
+import praw.models
 import yaml
 
-from phc_bot.app import clean_ph_links, get_string_to_search, get_ph_title, escape_reddit_link_text
+from phc_bot.app import clean_ph_links, get_string_to_search, get_ph_title, escape_reddit_link_text, \
+    get_image_urls_for_submission
 
 
 class TestCleanPhLinks:
@@ -55,6 +57,9 @@ class TestGetStringToSearch:
 
     def test_empty(self):
         assert get_string_to_search('') == ''
+
+    def test_strip(self):
+        assert get_string_to_search('   hello world   ') == 'hello world'
 
     def test_samples(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -112,3 +117,10 @@ class TestEscapeRedditLinkTest:
     def test_mixed(self):
         assert escape_reddit_link_text(
             r'_*Great*_ [job], *_keep it up*_') == r'\_\*Great\*\_ \[job\], \*\_keep it up\*\_'
+
+
+class TestGetImageUrlsFromSubmission:
+
+    def test_reddit_gallery(self):
+        submission = praw.models.Submission(get_reddit())
+        assert get_image_urls_for_submission()
